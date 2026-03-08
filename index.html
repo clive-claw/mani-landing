@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mani — Expense claims on autopilot</title>
+<meta name="description" content="AI expense assistant for Australian ICT contractors. Upload your bank CSV. Get your claims back.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0e0e0e;
+  --fg: #e8e4df;
+  --dim: #6b6560;
+  --accent: #c4a46a;
+  --border: #1e1e1e;
+  --card: #141414;
+  --mono: 'JetBrains Mono', monospace;
+  --serif: 'Newsreader', Georgia, serif;
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Nav */
+nav {
+  padding: 2rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--fg);
+}
+
+.logo span { color: var(--dim); font-weight: 400; }
+
+nav a {
+  color: var(--dim);
+  font-size: 0.8rem;
+  transition: color 0.2s;
+}
+nav a:hover { color: var(--fg); text-decoration: none; }
+
+/* Hero */
+.hero {
+  padding: 6rem 0 4rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 2.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-bottom: 2rem;
+  color: var(--fg);
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero p {
+  color: var(--dim);
+  max-width: 480px;
+  margin-bottom: 2.5rem;
+}
+
+.cta-row {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.65rem 1.5rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid var(--accent);
+  color: var(--bg);
+  background: var(--accent);
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.btn:hover {
+  background: transparent;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--dim);
+  border-color: var(--border);
+}
+
+.btn-ghost:hover {
+  color: var(--fg);
+  border-color: var(--dim);
+}
+
+/* How it works */
+.section {
+  padding: 4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--dim);
+  margin-bottom: 2rem;
+}
+
+.steps {
+  display: grid;
+  gap: 2rem;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.step-num {
+  color: var(--accent);
+  font-size: 0.8rem;
+  padding-top: 0.15rem;
+}
+
+.step h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+  color: var(--fg);
+}
+
+.step p {
+  color: var(--dim);
+  font-size: 0.8rem;
+}
+
+/* Features */
+.features {
+  display: grid;
+  gap: 0;
+}
+
+.feature {
+  padding: 1.5rem 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: start;
+  border-bottom: 1px solid var(--border);
+}
+
+.feature:last-child { border-bottom: none; }
+
+.feature h3 {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--fg);
+}
+
+.feature p {
+  color: var(--dim);
+  font-size: 0.8rem;
+  grid-column: 1;
+}
+
+.feature .tag {
+  font-size: 0.65rem;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.2rem 0.5rem;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  height: fit-content;
+}
+
+/* Banks */
+.banks {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  color: var(--dim);
+  font-size: 0.8rem;
+}
+
+.banks span { color: var(--fg); }
+
+/* Pricing */
+.pricing {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  margin-top: 2rem;
+}
+
+.price-card {
+  background: var(--card);
+  padding: 2rem;
+}
+
+.price-card h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.price-card .subtitle {
+  color: var(--dim);
+  font-size: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.price {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--fg);
+  margin-bottom: 0.25rem;
+}
+
+.price span {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--dim);
+}
+
+.price-list {
+  list-style: none;
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.price-list li {
+  font-size: 0.8rem;
+  color: var(--dim);
+  padding-left: 1rem;
+  position: relative;
+}
+
+.price-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 4px;
+  height: 4px;
+  background: var(--accent);
+}
+
+.price-card.featured {
+  border-top: 2px solid var(--accent);
+}
+
+/* Terminal demo */
+.demo {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-top: 2rem;
+  font-size: 0.8rem;
+  line-height: 2;
+  overflow: hidden;
+}
+
+.demo .line { opacity: 0; animation: fadein 0.3s ease forwards; }
+.demo .prompt { color: var(--accent); }
+.demo .output { color: var(--dim); }
+.demo .highlight { color: var(--fg); }
+
+@keyframes fadein { to { opacity: 1; } }
+
+.demo .line:nth-child(1) { animation-delay: 0.2s; }
+.demo .line:nth-child(2) { animation-delay: 0.7s; }
+.demo .line:nth-child(3) { animation-delay: 1.2s; }
+.demo .line:nth-child(4) { animation-delay: 1.7s; }
+.demo .line:nth-child(5) { animation-delay: 2.2s; }
+.demo .line:nth-child(6) { animation-delay: 2.7s; }
+.demo .line:nth-child(7) { animation-delay: 3.2s; }
+.demo .line:nth-child(8) { animation-delay: 3.7s; }
+
+/* Stats */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-top: 2rem;
+}
+
+.stat {
+  background: var(--bg);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.stat .num {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.stat .label {
+  font-size: 0.7rem;
+  color: var(--dim);
+  margin-top: 0.25rem;
+}
+
+/* Footer */
+footer {
+  padding: 3rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--dim);
+  font-size: 0.75rem;
+}
+
+footer a { color: var(--dim); }
+footer a:hover { color: var(--fg); }
+
+/* Mobile */
+@media (max-width: 600px) {
+  .hero h1 { font-size: 1.75rem; }
+  .pricing { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: 1fr; }
+  .cta-row { flex-direction: column; align-items: flex-start; }
+  .feature { grid-template-columns: 1fr; }
+  .feature .tag { justify-self: start; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <nav>
+    <div class="logo">mani <span>/ askmani.ai</span></div>
+    <div style="display:flex;gap:1.5rem;">
+      <a href="#how">How it works</a>
+      <a href="#waitlist">Early access</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Your expenses, <em>classified.</em><br>Your claims, <em>done.</em></h1>
+    <p>AI expense assistant built for Australian ICT contractors. Upload your bank CSV, snap your receipts, get your claims back in your employer's format. That's it.</p>
+    <div class="cta-row">
+      <a href="#waitlist" class="btn">Join the waitlist</a>
+      <a href="#how" class="btn btn-ghost">See how it works</a>
+    </div>
+  </section>
+
+  <section class="section" id="how">
+    <div class="section-label">How it works</div>
+
+    <div class="demo">
+      <div class="line"><span class="prompt">$</span> mani import commbank-mar-2026.csv</div>
+      <div class="line"><span class="output">  Imported 147 transactions.</span></div>
+      <div class="line"><span class="output">  Auto-classified 139 of 147 — </span><span class="highlight">8 need review.</span></div>
+      <div class="line"><span class="prompt">$</span> mani classify --review</div>
+      <div class="line"><span class="output">  Officeworks $89.00 → </span><span class="highlight">Office Supplies (100% business)</span></div>
+      <div class="line"><span class="output">  JB Hi-Fi $349.00 → </span><span class="highlight">Equipment (depreciation tracked)</span></div>
+      <div class="line"><span class="prompt">$</span> mani export --format powerpays --week 2026-W10</div>
+      <div class="line"><span class="output">  Exported 12 claims → </span><span class="highlight">powerpays-W10.csv</span></div>
+    </div>
+
+    <div class="steps" style="margin-top:3rem;">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div>
+          <h3>Drop your bank CSV</h3>
+          <p>CommBank, Westpac, NAB, ANZ. We auto-detect the format and classify every transaction — business, personal, or mixed.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div>
+          <h3>Snap your receipts</h3>
+          <p>Photo or PDF. AI reads the vendor, amount, GST, and matches it to the right transaction. No manual entry.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div>
+          <h3>Export your claims</h3>
+          <p>One click. Get a CSV in the exact format Power Pays, PayAus, or Hays expects. Submit and get paid.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">What it handles</div>
+    <div class="features">
+      <div class="feature">
+        <h3>Auto-classification</h3>
+        <p>Trained on 2,500+ real contractor expense patterns. Learns your spending habits and gets smarter over time.</p>
+        <div class="tag">L1</div>
+      </div>
+      <div class="feature">
+        <h3>Receipt OCR</h3>
+        <p>Upload a photo. AI extracts vendor, date, amount, GST. Matches to your bank transactions automatically.</p>
+        <div class="tag">L1</div>
+      </div>
+      <div class="feature">
+        <h3>Employer-format export</h3>
+        <p>Power Pays, PayAus, Hays — claims generated in the exact CSV format your payroll expects.</p>
+        <div class="tag">L1</div>
+      </div>
+      <div class="feature">
+        <h3>Business vs personal split</h3>
+        <p>Mixed-use expenses handled properly. Percentage splits, GST apportionment, audit-ready trail.</p>
+        <div class="tag">L1</div>
+      </div>
+      <div class="feature">
+        <h3>PSI compliance</h3>
+        <p>20 ATO rules checked automatically. Results Test, 80% rule, home office, minor benefits — all covered.</p>
+        <div class="tag">L2</div>
+      </div>
+      <div class="feature">
+        <h3>BAS preparation</h3>
+        <p>Quarterly GST calculated from your classified transactions. Export-ready for your accountant or self-lodge.</p>
+        <div class="tag">L2</div>
+      </div>
+      <div class="feature">
+        <h3>Home office deductions</h3>
+        <p>70c/hr fixed rate method. Track your hours, Mani calculates the claim and checks the limits.</p>
+        <div class="tag">L2</div>
+      </div>
+      <div class="feature">
+        <h3>Depreciation tracking</h3>
+        <p>$300 threshold, $20k instant asset write-off. Mani tracks useful life and flags when items are fully depreciated.</p>
+        <div class="tag">L2</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-label">The engine</div>
+    <div class="stats">
+      <div class="stat">
+        <div class="num">2,500+</div>
+        <div class="label">expense patterns trained</div>
+      </div>
+      <div class="stat">
+        <div class="num">132</div>
+        <div class="label">vendor rules</div>
+      </div>
+      <div class="stat">
+        <div class="num">20</div>
+        <div class="label">ATO compliance rules</div>
+      </div>
+    </div>
+    <div class="banks" style="margin-top:1.5rem;">
+      Supported banks: <span>CommBank</span> <span>Westpac</span> <span>NAB</span> <span>ANZ</span>
+    </div>
+  </section>
+
+  <section class="section" id="pricing">
+    <div class="section-label">Pricing</div>
+    <p style="color:var(--dim);margin-bottom:1rem;">Mani is currently in early access. Pricing will be announced at launch.</p>
+    <p style="color:var(--fg);font-family:var(--serif);font-size:1.1rem;">Coming soon.</p>
+  </section>
+
+  <section class="section" id="waitlist">
+    <div class="section-label">Early access</div>
+    <h2 style="font-family:var(--serif);font-weight:400;font-size:1.5rem;margin-bottom:1rem;">Built by a contractor, for contractors.</h2>
+    <p style="color:var(--dim);max-width:480px;margin-bottom:2rem;">Mani started as a personal tool to stop losing receipts and fumbling with spreadsheets every Friday. Now it's ready for other contractors who are tired of the same thing.</p>
+    <form style="display:flex;gap:0.5rem;max-width:400px;" onsubmit="event.preventDefault();this.innerHTML='<span style=color:var(--accent)>You\'re on the list.</span>';">
+      <input type="email" placeholder="you@email.com" required style="flex:1;padding:0.65rem 1rem;font-family:var(--mono);font-size:0.8rem;background:var(--card);border:1px solid var(--border);color:var(--fg);outline:none;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+      <button type="submit" class="btn">Join</button>
+    </form>
+  </section>
+
+  <footer>
+    <span>askmani.ai</span>
+    <span>Brisbane, Australia</span>
+  </footer>
+</div>
+
+</body>
+</html>
