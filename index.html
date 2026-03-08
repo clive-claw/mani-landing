@@ -507,10 +507,38 @@ footer a:hover { color: var(--fg); }
     <div class="section-label">Early access</div>
     <h2 style="font-family:var(--serif);font-weight:400;font-size:1.5rem;margin-bottom:1rem;">Built by a contractor, for contractors.</h2>
     <p style="color:var(--dim);max-width:480px;margin-bottom:2rem;">Mani started as a personal tool to stop losing receipts and fumbling with spreadsheets every Friday. Now it's ready for other contractors who are tired of the same thing.</p>
-    <form style="display:flex;gap:0.5rem;max-width:400px;" onsubmit="event.preventDefault();this.innerHTML='<span style=color:var(--accent)>You\'re on the list.</span>';">
-      <input type="email" placeholder="you@email.com" required style="flex:1;padding:0.65rem 1rem;font-family:var(--mono);font-size:0.8rem;background:var(--card);border:1px solid var(--border);color:var(--fg);outline:none;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+    <form id="waitlist-form" style="display:flex;gap:0.5rem;max-width:400px;">
+      <input type="email" id="waitlist-email" placeholder="you@email.com" required style="flex:1;padding:0.65rem 1rem;font-family:var(--mono);font-size:0.8rem;background:var(--card);border:1px solid var(--border);color:var(--fg);outline:none;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
       <button type="submit" class="btn">Join</button>
     </form>
+    <script>
+    document.getElementById('waitlist-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('waitlist-email').value;
+      const form = this;
+      const btn = form.querySelector('button');
+      btn.textContent = '...';
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          form.innerHTML = '<span style="color:var(--accent)">You\'re on the list.</span>';
+        } else {
+          btn.textContent = 'Join';
+          btn.disabled = false;
+          form.insertAdjacentHTML('afterend', '<p style="color:#e05050;font-size:0.8rem;margin-top:0.5rem;">Something went wrong. Try again.</p>');
+        }
+      } catch {
+        btn.textContent = 'Join';
+        btn.disabled = false;
+      }
+    });
+    </script>
   </section>
 
   <footer>
